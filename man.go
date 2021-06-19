@@ -56,7 +56,7 @@ func (a ByVal) Len() int           { return len(a) }
 func (a ByVal) Less(i, j int) bool { return a[i].val < a[j].val }
 func (a ByVal) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
-//work Target Data
+
 func GetHeader(path string) []string {
 	file, err := os.Open(path)
 	if err != nil {
@@ -170,7 +170,7 @@ func WorkData(tgt Data, trn <-chan OrdData, res chan<- []dtAux, wg *sync.WaitGro
 	res <- kval
 }
 
-//Calcular la distancia de los Knn usando canales
+//Calcular la distancia de un k concurrentemente
 func knn(target Data, Tdata []*Data, k int) {
 	jobs := make(chan OrdData)
 	res := make(chan []dtAux, 40)
@@ -249,17 +249,16 @@ func handleRequest() {
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/data", createNewData)
 	http.HandleFunc("/knn/", runKnn)
-	log.Fatal(http.ListenAndServe(":6969", nil))
+	log.Fatal(http.ListenAndServe(":7070", nil))
 }
 
-//TODO: ADD TARGET DATA FORMAT
+//agregar los formatos
 var dt []*Data
 var stAge Standarizer
 var dt_tgt Data
 
 func main() {
-	//targetD := `{"AMBITO_INEI": 1,"NACIONAL_EXTRANJERO": 1,"SEXO":1,"EDAD": 20,"PLAN_DE_SEGURO_SIS_EMPRENDEDOR": 0,"PLAN_DE_SEGURO_SIS_GRATUITO": 1,"PLAN_DE_SEGURO_SIS_INDEPENDIENTE": 0,"PLAN_DE_SEGURO_SIS_MICROEMPRESA": 0,"PLAN_DE_SEGURO_SIS_PARA_TODOS": 0}`
-	URL := "https://raw.githubusercontent.com/Diegolivia/GoBackendKnn/main/Data/D_NORM_100.csv"
+	URL := "https://raw.githubusercontent.com/LmaoDiego/TA2ConcurrenteFinal/master/Data/D_NORMv2.csv"
 	fmt.Println("Loading Data...")
 	dt = GetBodyNet(URL)
 	fmt.Println("Standarize Data Age...")
